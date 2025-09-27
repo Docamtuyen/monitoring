@@ -1,0 +1,25 @@
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'docamtuyen2004@gmail.com'
+  smtp_auth_username: 'docamtuyen2004@gmail.com'
+  smtp_auth_password: 'qwzvbdakrdesnksg'
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'web.hook'
+
+receivers:
+- name: 'web.hook'
+  email_configs:
+  - to: 'leminhuyen1808@gmail.com'
+    headers:
+      Subject: 'Alert: {{ .GroupLabels.alertname }}'
+    html:  |
+      {{ range .Alerts }}
+      <b>Alert:</b> {{ .Annotations.summary }}<br/>
+      <b>Description:</b> {{ .Annotations.description }}<br/>
+      <b>Labels:</b> {{ .Labels }}<br/><br/>
+      {{ end }}
